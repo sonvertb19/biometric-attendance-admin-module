@@ -16,96 +16,101 @@ import math
 
 
 def run_script(roll_number):
-    face_id = roll_number
-    cam = cv2.VideoCapture(0)
-    cam.set(3, 640)  # set video width
-    cam.set(4, 480)  # set video height
+    try:
+        face_id = roll_number
+        cam = cv2.VideoCapture(0)
+        cam.set(3, 640)  # set video width
+        cam.set(4, 480)  # set video height
 
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    FACERECOG_DIR = os.path.join(BASE_DIR, "FaceRecognition")
+        FACERECOG_DIR = os.path.join(BASE_DIR, "FaceRecognition")
 
-    CCPATH = os.path.join(FACERECOG_DIR, "Cascades", "haarcascade_frontalface_default.xml")
-    DATASET_PATH = os.path.join(FACERECOG_DIR, "Dataset")
+        CCPATH = os.path.join(FACERECOG_DIR, "Cascades", "haarcascade_frontalface_default.xml")
+        DATASET_PATH = os.path.join(FACERECOG_DIR, "Dataset")
+        #Making the dataset directory if it doesn't already exist.
+        if not os.path.exists(DATASET_PATH):
+            os.makedirs(DATASET_PATH)
 
-    print(CCPATH)
-    face_detector = cv2.CascadeClassifier(CCPATH)
+        print(CCPATH)
+        face_detector = cv2.CascadeClassifier(CCPATH)
 
-    # For each person, enter one numeric face id
-    # face_id = "204"
+        # For each person, enter one numeric face id
+        # face_id = "204"
 
-    print("\n [INFO] Initializing face capture. Look the camera and wait ...")
-    # Initialize individual sampling face count
-    count = 0
+        print("\n [INFO] Initializing face capture. Look in the camera and wait ...")
+        # Initialize individual sampling face count
+        count = 0
 
-    while True:
+        while True:
 
-        ret, img = cam.read()
-        # img = cv2.flip(img, -1) # flip video image vertically
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        faces = face_detector.detectMultiScale(gray, 1.3, 5)
+            ret, img = cam.read()
+            # img = cv2.flip(img, -1) # flip video image vertically
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            faces = face_detector.detectMultiScale(gray, 1.3, 5)
 
-        for (x, y, w, h) in faces:
-            cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-            count += 1
+            for (x, y, w, h) in faces:
+                cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
+                count += 1
 
-            # Save the captured image into the datasets folder
-            path_for_image = os.path.join(DATASET_PATH, "User." + str(face_id) + '.' + str(count) + ".jpg")
-            print(path_for_image)
-            print("Status: " + str(cv2.imwrite(path_for_image, gray[y:y + h, x:x + w])))
+                # Save the captured image into the datasets folder
+                path_for_image = os.path.join(DATASET_PATH, "User." + str(face_id) + '.' + str(count) + ".jpg")
+                print(path_for_image)
+                print("Status: " + str(cv2.imwrite(path_for_image, gray[y:y + h, x:x + w])))
 
-            cv2.imshow('image', img)
+                cv2.imshow('image', img)
 
-        k = cv2.waitKey(100) & 0xff  # Press 'ESC' for exiting video
-        if k == 27:
-            break
-        elif count >= 60:  # Take 60 face sample and stop video
-            break
+            k = cv2.waitKey(100) & 0xff  # Press 'ESC' for exiting video
+            if k == 27:
+                break
+            elif count >= 60:  # Take 60 face sample and stop video
+                break
 
-    cam.release()
+        cam.release()
 
-    files = os.listdir(DATASET_PATH)
+        files = os.listdir(DATASET_PATH)
 
-    for file in files:
-        # print(files)
-        # print("in loop")
-        full_name = os.path.join(DATASET_PATH, file)
-        # print(full_name)
-        img = cv2.imread(full_name)
-        id = int(os.path.split(full_name)[-1].split(".")[1])
-        # print(id)
-        if int(id) == int(face_id):
-            # adding salt and pepper noise, mean and sigma can be altered
-            im = np.zeros(img.shape, np.uint8)  # do not use original image it overwrites the image
-            mean = 15
-            sigma = 5
-            cv2.randn(im, mean, sigma)  # create the random distribution
-            Noise = cv2.add(img, im)  # add the noise to the original image
+        for file in files:
+            # print(files)
+            # print("in loop")
+            full_name = os.path.join(DATASET_PATH, file)
+            # print(full_name)
+            img = cv2.imread(full_name)
+            id = int(os.path.split(full_name)[-1].split(".")[1])
+            # print(id)
+            if int(id) == int(face_id):
+                # adding salt and pepper noise, mean and sigma can be altered
+                im = np.zeros(img.shape, np.uint8)  # do not use original image it overwrites the image
+                mean = 15
+                sigma = 5
+                cv2.randn(im, mean, sigma)  # create the random distribution
+                Noise = cv2.add(img, im)  # add the noise to the original image
 
-            # Writing the file after processing
-            count += 1
+                # Writing the file after processing
+                count += 1
 
-            path_for_image = os.path.join(DATASET_PATH, "User." + str(face_id) + '.' + str(count) + ".jpg")
-            # print(path_for_image)
+                path_for_image = os.path.join(DATASET_PATH, "User." + str(face_id) + '.' + str(count) + ".jpg")
+                # print(path_for_image)
 
-            print("Status: " + str(cv2.imwrite(path_for_image, img)))
+                print("Status: " + str(cv2.imwrite(path_for_image, img)))
 
-            # adding rotation
+                # adding rotation
 
-            roted_image = rotate(img, 15)
+                roted_image = rotate(img, 15)
 
-            # Writing the file after processing
-            count += 1
-            path_for_image = os.path.join(DATASET_PATH, "User." + str(face_id) + '.' + str(count) + ".jpg")
-            # print(path_for_image)
+                # Writing the file after processing
+                count += 1
+                path_for_image = os.path.join(DATASET_PATH, "User." + str(face_id) + '.' + str(count) + ".jpg")
+                # print(path_for_image)
 
-            print("Status: " + str(cv2.imwrite(path_for_image, roted_image)))
-            # cv2.imwrite(path1,Noise)
+                print("Status: " + str(cv2.imwrite(path_for_image, roted_image)))
+                # cv2.imwrite(path1,Noise)
 
-    # Do a bit of cleanup
-    print("\n [INFO] Exiting Program and cleanup stuff")
-    cv2.destroyAllWindows()
-
+        # Do a bit of cleanup
+        print("\n [INFO] Exiting Program and cleanup stuff")
+        cv2.destroyAllWindows()
+    except:
+        return -1    
 
 def rotated_rect(w, h, angle):
     """

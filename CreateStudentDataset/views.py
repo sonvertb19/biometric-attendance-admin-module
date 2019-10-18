@@ -5,8 +5,11 @@ import json
 from FaceRecognition.Create_dataset import run_script
 from FaceRecognition.Train import train_faces
 
+import os
+import sys
 
-@api_view(["GET"])
+
+@api_view(["POST"])
 def create_student_dataset(request):
 
     # Making a request to the BasDB_API server.
@@ -16,14 +19,11 @@ def create_student_dataset(request):
     roll_number = request.data['user']['username']
     print(roll_number)
 
-    # TODO: (FOR YASH ARORA)If run_script is not completed properly, do not send request to the server.
-    """
-        Return a value from run_script and act correspondingly. 
-        Something like: If all 180 images have not been created and written to the disk,
-        return an error dictionary.
-        Else return True. 
-    """
-    run_script(roll_number=roll_number)
+    rv = run_script(roll_number=roll_number)
+
+    if rv == -1:
+        return response.Response(status=500, data={"message": "Face could not be captured.",
+                                                   "troubleshoot": "Try again"})
 
     r = rq.post("http://127.0.0.1:8001/students/", json=request.data, headers=custom_header)
 
@@ -32,6 +32,25 @@ def create_student_dataset(request):
     print(r.text)
     print("status_code: ", end=" ")
     print(r.status_code)
+
+    if r.status_code != 201:
+        # Delete all files with id: roll_number
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        facerecog_dir = os.path.join(base_dir, "FaceRecognition")
+        dataset_path = os.path.join(facerecog_dir, "Dataset")
+
+        files = os.listdir(dataset_path)
+
+        for file in files:
+            try:
+                print("Deleting Dataset File: " + str(file))
+                if str(roll_number) in file:
+                    file_abs_path = os.path.join(dataset_path, file)
+                    print(file.split('.')[2])
+                    os.remove(file_abs_path)
+            except Exception:
+                print(sys.exc_info()[0])
+                return response.Response(status=500, data=json.loads(sys.exc_info()[0]))
 
     return response.Response(status=r.status_code, data=json.loads(r.text))
 

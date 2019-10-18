@@ -5,7 +5,6 @@ Capture multiple Faces from multiple users to be stored on a DataBase (dataset d
 
 Based on original code by Anirban Kar: https://github.com/thecodacus/Face-Recognition    
 
-Developed by Marcelo Rovai - MJRoBot.org @ 21Feb18    
 """
 
 import cv2
@@ -16,6 +15,7 @@ import math
 
 
 def run_script(roll_number):
+    returnVal = int()
     try:
         face_id = roll_number
         cam = cv2.VideoCapture(0)
@@ -28,7 +28,8 @@ def run_script(roll_number):
 
         CCPATH = os.path.join(FACERECOG_DIR, "Cascades", "haarcascade_frontalface_default.xml")
         DATASET_PATH = os.path.join(FACERECOG_DIR, "Dataset")
-        #Making the dataset directory if it doesn't already exist.
+
+        # Making the dataset directory if it doesn't already exist.
         if not os.path.exists(DATASET_PATH):
             os.makedirs(DATASET_PATH)
 
@@ -109,8 +110,15 @@ def run_script(roll_number):
         # Do a bit of cleanup
         print("\n [INFO] Exiting Program and cleanup stuff")
         cv2.destroyAllWindows()
+        returnVal = 0
+
     except:
-        return -1    
+        returnVal = -1
+
+    finally:
+        print("for debugger: Inside finally")
+        return returnVal
+
 
 def rotated_rect(w, h, angle):
     """
@@ -142,7 +150,7 @@ def rotated_rect(w, h, angle):
     y = a * math.cos(gamma)
     x = y * math.tan(gamma)
 
-    return (bb_w - 2 * x, bb_h - 2 * y)
+    return bb_w - 2 * x, bb_h - 2 * y
 
 
 def crop(img, w, h):

@@ -5,7 +5,6 @@ Capture multiple Faces from multiple users to be stored on a DataBase (dataset d
 
 Based on original code by Anirban Kar: https://github.com/thecodacus/Face-Recognition
 
-Developed by Marcelo Rovai - MJRoBot.org @ 21Feb18
 """
 
 
@@ -25,7 +24,7 @@ faceCascade = cv2.CascadeClassifier(CCPATH);
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
-#initiate id counter
+# initiate id counter
 id = 0
 
 # Initialize and start realtime video capture

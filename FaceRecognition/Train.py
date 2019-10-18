@@ -5,7 +5,6 @@ Capture multiple Faces from multiple users to be stored on a DataBase (dataset d
 
 Based on original code by Anirban Kar: https://github.com/thecodacus/Face-Recognition
 
-Developed by Marcelo Rovai - MJRoBot.org @ 21Feb18
 """
 
 

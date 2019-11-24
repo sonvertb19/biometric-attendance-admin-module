@@ -22,11 +22,21 @@ def create_student_dataset(request):
     roll_number = request.data['user']['username']
     print(roll_number)
 
+    # If username sent IS NOT integer, return bad request.
+    # Causes very severe problem.
+    # Better to send a 400 instead of handeling.
+    if(not isinstance(roll_number, int)):
+        return response.Response(status=400, data={"username": "username is not an integer."})
+
+
     rv = run_script(roll_number=roll_number)
+    
+    print("Value returned by Create_dataset: {0}".format(rv))
 
     if rv == -1:
         return response.Response(status=500, data={"message": "Face could not be captured.",
                                                    "troubleshoot": "Try again"})
+
 
     r = rq.post("http://127.0.0.1:8001/students/", json=request.data, headers=custom_header)
 

@@ -112,7 +112,10 @@ def run_script(roll_number):
         cv2.destroyAllWindows()
         returnVal = 0
 
-    except:
+    except Exception as e:
+        print("[EXCEPTION]")
+        print(e)
+        
         returnVal = -1
 
     finally:

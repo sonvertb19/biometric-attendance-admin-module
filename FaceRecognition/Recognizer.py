@@ -39,7 +39,11 @@ def recognizer():
     minW = 0.1*cam.get(3)
     minH = 0.1*cam.get(4)
 
-    while True:
+    loop_counter = 4000
+
+    # Will capture 4000 frames and exit.
+    while loop_counter:
+        loop_counter = loop_counter - 1
 
         ret, img = cam.read()
         # img = cv2.flip(img, -1) # Flip vertically
@@ -93,4 +97,4 @@ def recognizer():
 
 
 if __name__ == "__main__":
-    recognizer()
+    print(recognizer())

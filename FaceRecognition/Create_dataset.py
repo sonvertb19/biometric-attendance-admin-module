@@ -64,7 +64,7 @@ def run_script(roll_number):
             k = cv2.waitKey(100) & 0xff  # Press 'ESC' for exiting video
             if k == 27:
                 break
-            elif count >= 60:  # Take 60 face sample and stop video
+            elif count >= 30:  # Take 60 face sample and stop video
                 break
 
         cam.release()

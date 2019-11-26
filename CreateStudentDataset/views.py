@@ -100,6 +100,8 @@ def mark_attendance(request):
     ##########################################################
 
     data = request.data
+
+    print(data)
     
     # Parse response as json and get list of timetables from it.
     timetable_id_list = data["timetable_period"]
@@ -211,24 +213,6 @@ def mark_attendance(request):
     present_students = identified_students.intersection(all_students)
 
     absent_students = all_students.difference(present_students)
-
-    # print("student_username_id: ", end=" ")
-    # print(student_username_id)
-
-    # print("All Students: ", end=" ")
-    # print(all_students)
-    
-    # print("Present Students: ", end=" ")
-    # print(present_students)
-    
-    # print("Absent Students: ", end=" ")
-    # print(absent_students)
-
-    # student:section
-    # section:timetable
-
-    # print(student_id_section)
-    # print(section_id_timetable_id)
 
     present_student_timetable = {}
     absent_student_timetable = {}

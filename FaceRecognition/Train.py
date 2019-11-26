@@ -46,7 +46,11 @@ def train_faces():
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     FACERECOG_DIR = os.path.join(BASE_DIR, "FaceRecognition")
     DATASET_PATH = os.path.join(FACERECOG_DIR, "Dataset")
+    TRAINER_FOLDER_PATH = os.path.join(FACERECOG_DIR, "trainer") 
     TRAINER_PATH = os.path.join(FACERECOG_DIR, "trainer", "trainer.yml")
+
+    if not os.path.exists(TRAINER_FOLDER_PATH):
+            os.makedirs(TRAINER_FOLDER_PATH)
 
     recognizer = cv2.face.LBPHFaceRecognizer_create()
 
